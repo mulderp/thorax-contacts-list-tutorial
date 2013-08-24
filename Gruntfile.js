@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+  var proxySnippet = require("./lib/utils.js").proxyRequest;
   var port = 8000,
       publicDir = './public',
       jsDir = publicDir + '/modules',
@@ -16,8 +17,15 @@ module.exports = function(grunt) {
           hostname: hostname,
           base: publicDir,
           port: port
-        }
-      }
+        },
+        proxies: [
+                    {
+                      context: '/defaults',
+                      host: '0.0.0.0',
+                      port: '9292'
+                    }
+              ],
+      },
     },
     lumbar: {
       // performs an initial build so when tests
@@ -67,7 +75,8 @@ module.exports = function(grunt) {
     'thorax:inspector',
     'lumbar:init',
     'connect:server',
-    'open-browser',
+//    'open-browser',
+    'configureProxies',
     'lumbar:watch'
   ]);
 };
