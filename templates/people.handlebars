@@ -1,8 +1,13 @@
-{{#collection tag="ul"}}
-  {{#link "details/{{id}}" expand-tokens=true}}
-    <li>this is a person who's firstName is {{firstName}} and lastName is {{lastName}} and number is {{number}} </li>
-  {{/link}}
-  {{#button "handleDelete"}}Delete{{/button}}
+{{#collection tag="div"}}
+  <ul class="person">
+    <li class="name">
+    {{#link "details/{{id}}" expand-tokens=true}}
+      {{firstName}} {{lastName}}
+    {{/link}}
+    </li>
+    <li>{{number}} </li>
+    <li>{{#button "handleDelete"}}Delete{{/button}}</li>
+  </ul>
 {{/collection}}
 
 {{view personForm}}

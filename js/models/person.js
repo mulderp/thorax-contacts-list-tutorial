@@ -3,6 +3,6 @@ Thorax.Model.extend({
   defaults: {
     firstName: "unknown",
     lastName: "unknown",
-    phone: "unknown"
+    number: "unknown"
   }
 })

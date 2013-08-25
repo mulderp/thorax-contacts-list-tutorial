@@ -1,8 +1,26 @@
 /* This stylesheet will be available on all modules */
 
+body {
+  background-color: #A1A1A3;
+}
+
+.main {
+  margin: 20px;
+  background-color: white;
+}
+
 .personEditForm {
   display: none;
 
 }
 
+ul.person {
+  list-style: none;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: white;
+}
 
+ul.person:hover {
+  background-color: #F7FFF9;
+}
