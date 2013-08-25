@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+  var request = require('request');
   var proxySnippet = require("./lib/utils.js").proxyRequest;
   var port = 8000,
       publicDir = './public',
@@ -16,16 +17,42 @@ module.exports = function(grunt) {
         options: {
           hostname: hostname,
           base: publicDir,
-          port: port
-        },
-        proxies: [
+          port: port,
+          logger: 'dev',
+          middleware: function(connect, options) {
+            var config = [
+                    // Serve static files.
+                    connect.static(options.base),
+                    // Make empty directories browsable.
+                    connect.directory(options.base)
+                ];
+
+                config.unshift(function(req, res, next) {
+                  if (req.url.indexOf('/api/') == 0) {
+                    req.pipe(request('http://localhost:9292' + req.url.slice(4))).pipe(res);
+                  }
+                  else
+                  {
+                    next();
+                  }
+
+                if (options.logger) {
+                    config.unshift(connect.logger(options.logger));
+                  }
+
+                });
+
+            return config;
+          }
+        }
+      },
+      proxies: [
                     {
                       context: '/defaults',
-                      host: '0.0.0.0',
+                      host: hostname,
                       port: '9292'
                     }
-              ],
-      },
+       ],
     },
     lumbar: {
       // performs an initial build so when tests
@@ -70,13 +97,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('thorax-inspector');
   grunt.loadNpmTasks('lumbar');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-connect-proxy');
 
   grunt.registerTask('default', [
     'thorax:inspector',
     'lumbar:init',
     'connect:server',
-//    'open-browser',
     'configureProxies',
+//    'open-browser',
     'lumbar:watch'
   ]);
 };
